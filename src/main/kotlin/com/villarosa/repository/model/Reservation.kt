@@ -9,11 +9,6 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.Table
 
-/*
-create table villarosa.reservations (`id` int(8) not null auto_increment, `customer_id` int(8), `room_id` int(3),
-`start_date` datetime,  `end_date` datetime, `created_date` datetime default now(), PRIMARY KEY (`id`));
- */
-
 @Entity
 @Table(name = "reservations")
 data class Reservation(@Id

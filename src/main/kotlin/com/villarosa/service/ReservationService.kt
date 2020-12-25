@@ -6,6 +6,7 @@ import com.villarosa.repository.model.Apartment
 import com.villarosa.repository.model.Reservation
 import com.villarosa.repository.model.ReservationInfo
 import org.springframework.stereotype.Service
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -18,8 +19,10 @@ class ReservationService(private val reservationRepository: ReservationRepositor
             throw IllegalArgumentException("Dates should not be empty")
         }
 
-        val startDate = SimpleDateFormat("yyyy-MM-dd").parse(startDateString)
-        val endDate = SimpleDateFormat("yyyy-MM-dd").parse(endDateString)
+
+        val startDate = parseDate(startDateString)
+
+        val endDate = parseDate(endDateString)
 
         if (startDate > endDate) {
             throw ExceptionHandler.ClientException("StartDate can't be after EndDate")
@@ -40,8 +43,8 @@ class ReservationService(private val reservationRepository: ReservationRepositor
     }
 
     fun findAvailableApartments(startDateString: String, endDateString: String): List<Apartment> {
-        val startDate = SimpleDateFormat("yyyy-MM-dd").parse(startDateString)
-        val endDate = SimpleDateFormat("yyyy-MM-dd").parse(endDateString)
+        val startDate = parseDate(startDateString)
+        val endDate = parseDate(endDateString)
 
         if (startDate > endDate) {
             throw ExceptionHandler.ClientException("StartDate can't be after EndDate")
@@ -66,6 +69,9 @@ class ReservationService(private val reservationRepository: ReservationRepositor
         reservationRepository.delete(reservation)
     }
 
+    /**
+     * Updates the room of the reservation
+     */
     fun updateReservationRoom(reservationId: Int, newRoomId: Int) {
         val reservationOptional = reservationRepository.findById(reservationId)
         if (reservationOptional.isPresent.not()) {
@@ -77,10 +83,26 @@ class ReservationService(private val reservationRepository: ReservationRepositor
 
         val reservation = reservationOptional.get()
 
+        val newRoomReservations = reservationRepository.findByRoomId(newRoomId)
+
+        val newRoomReservationForPeriodOfExistingReservation =
+                findOverlappingReservations(newRoomReservations, reservation.startDate!!, reservation.endDate!!)
+        // check if new room has existing reservation that overlaps with the one we want to change from
+        if (newRoomReservationForPeriodOfExistingReservation.isNotEmpty()) {
+            val newRoomOverlappingReservation = newRoomReservationForPeriodOfExistingReservation.first()
+            throw ExceptionHandler.ClientException("New room has overlapping reservation: " +
+                                                           "customer-id: ${newRoomOverlappingReservation.customerId}, " +
+                                                           "start-date: ${newRoomOverlappingReservation.startDate}, " +
+                                                           "end-date: ${newRoomOverlappingReservation.endDate}")
+        }
+
         val updatedReservation = reservation.copy(roomId = newRoomId)
         reservationRepository.save(updatedReservation)
     }
 
+    /**
+     * All reservations for a customer, most recent at the top.
+     */
     fun findReservationsByCustomer(customerId: Int): List<ReservationInfo> =
             reservationRepository.findByCustomerId(customerId)
                     .map { it.toReservationInfo() }
@@ -100,5 +122,9 @@ class ReservationService(private val reservationRepository: ReservationRepositor
                         (startDate < it.startDate && endDate > it.endDate)
             }
 
-
+    private fun parseDate(startDateString: String) = try {
+        SimpleDateFormat("yyyy-MM-dd").parse(startDateString)
+    } catch (e: ParseException) {
+        throw ExceptionHandler.ClientException("Date should have format: yyyy-MM-dd")
+    }
 }

@@ -11,7 +11,5 @@ server:
 
 datasource:
   jdbcUrl: jdbc:mariadb://localhost/villarosa
-  username: patientping
-  password: patientping
   minimumIdle: 1
   maximumPoolSize: 5

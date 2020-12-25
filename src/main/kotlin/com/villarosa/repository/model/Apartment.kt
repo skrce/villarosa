@@ -7,10 +7,6 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.Table
 
-/*
-  create table villarosa.apartments (`id` int(8) not null auto_increment, `capacity` int(2), `orientation` varchar(200),
- `view` varchar(200),  `regular_price` int(7), `top_season_price` int(7), PRIMARY KEY (`id`));
- */
 @Entity
 @Table(name = "apartments")
 data class Apartment(@Id

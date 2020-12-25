@@ -7,11 +7,6 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.Table
 
-/*
-    -- create table villarosa.customers (`id` int(8) not null auto_increment, `first_name` varchar(200), `last_name` varchar(200),
-    -- `phone` varchar(200),  `address` varchar(200), `created_date DATETIME default now()`PRIMARY KEY (`id`));
- */
-
 @Entity
 @Table(name = "customers")
 data class Customer(@Id

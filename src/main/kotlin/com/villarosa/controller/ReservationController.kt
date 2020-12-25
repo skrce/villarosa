@@ -61,7 +61,7 @@ class ReservationController(private val reservationService: ReservationService) 
     fun cancelReservation(@ApiParam(value = "Reservation ID")
                           @RequestParam("reservationId") reservationId: Int) {
         LOGGER.info("Called cancelReservation() with reservationId {}", reservationId)
-        return reservationService.cancelReservation(reservationId)
+        reservationService.cancelReservation(reservationId)
     }
 
     @PatchMapping(value = ["/reservation/"],
@@ -72,6 +72,6 @@ class ReservationController(private val reservationService: ReservationService) 
                               @ApiParam(value = "New Room ID")
                               @RequestParam("newRoomId") newRoomId: Int) {
         LOGGER.info("Called updateReservationRoom() with reservationId and newRoomId{}", reservationId, newRoomId)
-        return reservationService.updateReservationRoom(reservationId, newRoomId)
+        reservationService.updateReservationRoom(reservationId, newRoomId)
     }
 }
