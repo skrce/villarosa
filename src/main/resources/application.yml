@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: villarosa
+  security.user:
+    name: test
+    roles: USER
+
+server:
+  port: 9098
+
+
+datasource:
+  jdbcUrl: jdbc:mariadb://localhost/villarosa
+  username: patientping
+  password: patientping
+  minimumIdle: 1
+  maximumPoolSize: 5
