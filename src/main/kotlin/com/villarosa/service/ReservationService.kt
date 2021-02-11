@@ -12,7 +12,8 @@ import java.util.Date
 
 @Service
 class ReservationService(private val reservationRepository: ReservationRepository,
-                         private val apartmentService: ApartmentService) {
+                         private val apartmentService: ApartmentService,
+                         private val customerService: CustomerService) {
 
     fun createReservation(customerId: Int, roomId: Int, startDateString: String, endDateString: String): Int {
         if (listOf(startDateString, endDateString).any { it.isEmpty() }) {
@@ -26,6 +27,11 @@ class ReservationService(private val reservationRepository: ReservationRepositor
 
         if (startDate > endDate) {
             throw ExceptionHandler.ClientException("StartDate can't be after EndDate")
+        }
+
+        val customer = customerService.findCustomerById(customerId)
+        if (customer.isPresent.not()) {
+            throw ExceptionHandler.ClientException("Customer does not exist!")
         }
 
         // check if reservation exists in that period

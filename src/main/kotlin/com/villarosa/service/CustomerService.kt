@@ -24,6 +24,8 @@ class CustomerService(private val customerRepository: CustomerRepository) {
                 .id!!
     }
 
+    fun findCustomerById(id: Int) = customerRepository.findById(id)
+
     fun searchCustomer(firstName: String?, phone: String?): List<Customer> {
 
         if (listOf(firstName, phone).all { it == null }) {
