@@ -118,7 +118,7 @@ Access http://localhost:9098/swagger-ui.html
 
 **Example**
 
-    curl -H "Content-Type: application/json" -X GET 'http://<USER>:<PASSWORD>@localhost:9099/MBTA/routes/least-stops-route'
+    curl -H "Content-Type: application/json" -X GET 'http://<USER>:<PASSWORD>@localhost:9098/customerfirstName=test&phone=123456789
     
 ---
 
